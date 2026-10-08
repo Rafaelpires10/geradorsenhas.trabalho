@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard - Gerador & Analisador de Senhas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(18, 26, 43, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --accent-primary: #00f2fe;
+            --accent-secondary: #4facfe;
+            --text-main: #f0f4f8;
+            --text-muted: #8a99ad;
+            --danger: #ff4b4b;
+            --warning: #f1c40f;
+            --good: #2ecc71;
+            --strong: #00f2fe;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.1) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(79, 172, 254, 0.1) 0%, transparent 40%);
+        }
+
+        header {
+            padding: 2rem 4rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tagline {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        main {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 2rem;
+            padding: 3rem 4rem;
+            max-width: 1800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .display-box {
+            position: relative;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: border-color 0.3s;
+        }
+
+        .display-box:focus-within {
+            border-color: var(--accent-primary);
+        }
+
+        .password-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-main);
+            font-size: 1.6rem;
+            font-family: monospace;
+            letter-spacing: 2px;
+            padding-right: 1rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-icon {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+        }
+
+        .btn-icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: #000;
+            border: none;
+            padding: 1.2rem;
+            border-radius: 14px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            box-shadow: 0 10px 25px rgba(0, 242, 254, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .length-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+        }
+
+        .length-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .checkbox-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .checkbox-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .checkbox-card input {
+            accent-color: var(--accent-primary);
+            width: 18px;
+            height: 18px;
+        }
+
+        .strength-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .percentage-display {
+            font-size: 4rem;
+            font-weight: 700;
+            line-height: 1;
+            background: linear-gradient(135deg, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .strength-bar-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s;
+            border-radius: 6px;
+        }
+
+        .metrics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .metric-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            font-size: 0.95rem;
+        }
+
+        .metric-status {
+            font-weight: 600;
+        }
+
+        .status-pass { color: var(--good); }
+        .status-fail { color: var(--danger); }
+
+        .crack-time-card {
+            background: rgba(0, 242, 254, 0.05);
+            border: 1px solid rgba(0, 242, 254, 0.15);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .crack-time-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            margin-top: 5px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 1024px) {
+            main {
+                grid-template-columns: 1fr;
+                padding: 2rem;
+            }
+            header {
+                padding: 1.5rem 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">⚡ CyberGuard</div>
+        <div class="tagline">Gerador e Analisador Avançado de Segurança</div>
+    </header>
+
+    <main>
+        <!-- PAINEL ESQUERDO: GERADOR E CONFIGURAÇÕES -->
+        <section class="panel">
+            <span class="section-title">Gerador de Senha</span>
+
+            <div class="display-box">
+                <input type="text" id="passwordInput" class="password-input" placeholder="Digite ou gere uma senha" autocomplete="off">
+                <div class="actions">
+                    <button class="btn-icon" id="copyBtn" title="Copiar">Copiar</button>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <div class="control-header">
+                        <label>Tamanho da Senha</label>
+                        <span id="lengthVal" style="font-weight: 700; color: var(--accent-primary);">16</span>
+                    </div>
+                    <input type="range" id="lengthSlider" class="length-slider" min="4" max="64" value="16">
+                </div>
+
+                <div class="options-grid">
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incUppercase" checked>
+                        <span>Maiúsculas (A-Z)</span>
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incLowercase" checked>
+                        <span>Minúsculas (a-z)</span>
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incNumbers" checked>
+                        <span>Números (0-9)</span>
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incSymbols" checked>
+                        <span>Símbolos (!@#$)</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="generateBtn">Gerar Nova Senha</button>
+        </section>
+
+        <!-- PAINEL DIREITO: ANÁLISE DE FORÇA EM % -->
+        <section class="panel">
+            <span class="section-title">Análise de Segurança</span>
+
+            <div class="strength-header">
+                <div>
+                    <div style="color: var(--text-muted); font-size: 0.9rem;">Nível de Proteção</div>
+                    <div id="strengthText" style="font-size: 1.4rem; font-weight: 700;">Muito Forte</div>
+                </div>
+                <div id="percentageVal" class="percentage-display">0%</div>
+            </div>
+
+            <div class="strength-bar-container">
+                <div id="strengthBar" class="strength-bar"></div>
+            </div>
+
+            <div class="metrics-list">
+                <div class="metric-item">
+                    <span>Comprimento adequado (min 12)</span>
+                    <span id="checkLength" class="metric-status">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Contém letras maiúsculas e minúsculas</span>
+                    <span id="checkCases" class="metric-status">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Contém números</span>
+                    <span id="checkNumbers" class="metric-status">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Contém caracteres especiais</span>
+                    <span id="checkSymbols" class="metric-status">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Variedade/Complexidade de caracteres</span>
+                    <span id="checkEntropy" class="metric-status">❌</span>
+                </div>
+            </div>
+
+            <div class="crack-time-card">
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Tempo estimado para quebrar (Força Bruta)</div>
+                <div id="crackTime" class="crack-time-val">0 segundos</div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        CyberGuard App &copy; 2026 - O processamento de segurança é feito localmente no seu navegador.
+    </footer>
+
+    <script>
+        // Conjuntos de Caracteres
+        const CHARS = {
+            uppercase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            lowercase: 'abcdefghijklmnopqrstuvwxyz',
+            numbers: '0123456789',
+            symbols: '!@#$%^&*()_+-=[]{}|;:,.<>?'
+        };
+
+        // Elementos DOM
+        const passwordInput = document.getElementById('passwordInput');
+        const lengthSlider = document.getElementById('lengthSlider');
+        const lengthVal = document.getElementById('lengthVal');
+        const generateBtn = document.getElementById('generateBtn');
+        const copyBtn = document.getElementById('copyBtn');
+
+        const incUppercase = document.getElementById('incUppercase');
+        const incLowercase = document.getElementById('incLowercase');
+        const incNumbers = document.getElementById('incNumbers');
+        const incSymbols = document.getElementById('incSymbols');
+
+        const percentageVal = document.getElementById('percentageVal');
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+        const crackTime = document.getElementById('crackTime');
+
+        // Atualizar valor do Slider
+        lengthSlider.addEventListener('input', (e) => {
+            lengthVal.textContent = e.target.value;
+            generatePassword();
+        });
+
+        // Eventos de Opções
+        [incUppercase, incLowercase, incNumbers, incSymbols].forEach(checkbox => {
+            checkbox.addEventListener('change', generatePassword);
+        });
+
+        passwordInput.addEventListener('input', analyzePassword);
+        generateBtn.addEventListener('click', generatePassword);
+
+        copyBtn.addEventListener('click', () => {
+            if (!passwordInput.value) return;
+            navigator.clipboard.writeText(passwordInput.value);
+            const originalText = copyBtn.textContent;
+            copyBtn.textContent = 'Copiado!';
+            setTimeout(() => copyBtn.textContent = originalText, 2000);
+        });
+
+        // Função para Gerar Senha Aleatória Segura
+        function generatePassword() {
+            let availableChars = '';
+            if (incUppercase.checked) availableChars += CHARS.uppercase;
+            if (incLowercase.checked) availableChars += CHARS.lowercase;
+            if (incNumbers.checked) availableChars += CHARS.numbers;
+            if (incSymbols.checked) availableChars += CHARS.symbols;
+
+            if (!availableChars) {
+                passwordInput.value = '';
+                analyzePassword();
+                return;
+            }
+
+            const length = parseInt(lengthSlider.value);
+            let password = '';
+            const array = new Uint32Array(length);
+            window.crypto.getRandomValues(array);
+
+            for (let i = 0; i < length; i++) {
+                password += availableChars[array[i] % availableChars.length];
+            }
+
+            passwordInput.value = password;
+            analyzePassword();
+        }
+
+        // Função principal de Análise e Cálculo de Porcentagem
+        function analyzePassword() {
+            const pwd = passwordInput.value;
+            if (!pwd) {
+                resetMetrics();
+                return;
+            }
+
+            let score = 0;
+            let poolSize = 0;
+
+            // Verificações dos critérios
+            const hasUpper = /[A-Z]/.test(pwd);
+            const hasLower = /[a-z]/.test(pwd);
+            const hasNumber = /[0-9]/.test(pwd);
+            const hasSymbol = /[^A-Za-z0-9]/.test(pwd);
+
+            if (hasUpper) poolSize += 26;
+            if (hasLower) poolSize += 26;
+            if (hasNumber) poolSize += 10;
+            if (hasSymbol) poolSize += 33;
+
+            // Atualização visual dos checklists
+            document.getElementById('checkLength').textContent = pwd.length >= 12 ? '✔' : '❌';
+            document.getElementById('checkLength').className = 'metric-status ' + (pwd.length >= 12 ? 'status-pass' : 'status-fail');
+
+            document.getElementById('checkCases').textContent = (hasUpper && hasLower) ? '✔' : '❌';
+            document.getElementById('checkCases').className = 'metric-status ' + ((hasUpper && hasLower) ? 'status-pass' : 'status-fail');
+
+            document.getElementById('checkNumbers').textContent = hasNumber ? '✔' : '❌';
+            document.getElementById('checkNumbers').className = 'metric-status ' + (hasNumber ? 'status-pass' : 'status-fail');
+
+            document.getElementById('checkSymbols').textContent = hasSymbol ? '✔' : '❌';
+            document.getElementById('checkSymbols').className = 'metric-status ' + (hasSymbol ? 'status-pass' : 'status-fail');
+
+            // Cálculo da Entropia (Bits de segurança)
+            const entropy = pwd.length * (poolSize > 0 ? Math.log2(poolSize) : 0);
+            
+            document.getElementById('checkEntropy').textContent = entropy > 60 ? '✔' : '❌';
+            document.getElementById('checkEntropy').className = 'metric-status ' + (entropy > 60 ? 'status-pass' : 'status-fail');
+
+            // Cálculo da Porcentagem (Baseado na entropia ideal de ~100 bits)
+            let percentage = Math.min(100, Math.round((entropy / 90) * 100));
+            
+            // Penalidade por senhas curtas
+            if (pwd.length < 8) percentage = Math.min(percentage, 30);
+
+            // Interface
+            percentageVal.textContent = `${percentage}%`;
+            strengthBar.style.width = `${percentage}%`;
+
+            // Define Cores e Níveis
+            if (percentage < 35) {
+                strengthBar.style.backgroundColor = 'var(--danger)';
+                strengthText.textContent = 'Fraca';
+                strengthText.style.color = 'var(--danger)';
+            } else if (percentage < 65) {
+                strengthBar.style.backgroundColor = 'var(--warning)';
+                strengthText.textContent = 'Média';
+                strengthText.style.color = 'var(--warning)';
+            } else if (percentage < 85) {
+                strengthBar.style.backgroundColor = 'var(--good)';
+                strengthText.textContent = 'Forte';
+                strengthText.style.color = 'var(--good)';
+            } else {
+                strengthBar.style.backgroundColor = 'var(--strong)';
+                strengthText.textContent = 'Muito Forte';
+                strengthText.style.color = 'var(--strong)';
+            }
+
+            // Estimativa de tempo para quebrar
+            calculateCrackTime(entropy);
+        }
+
+        function calculateCrackTime(entropy) {
+            // Estimativa baseada em 10 bilhões de tentativas por segundo
+            const combinations = Math.pow(2, entropy);
+            const seconds = combinations / 10000000000;
+
+            if (seconds < 1) {
+                crackTime.textContent = 'Instantâneo';
+            } else if (seconds < 60) {
+                crackTime.textContent = `${Math.round(seconds)} segundos`;
+            } else if (seconds < 3600) {
+                crackTime.textContent = `${Math.round(seconds / 60)} minutos`;
+            } else if (seconds < 86400) {
+                crackTime.textContent = `${Math.round(seconds / 3600)} horas`;
+            } else if (seconds < 31536000) {
+                crackTime.textContent = `${Math.round(seconds / 86400)} dias`;
+            } else if (seconds < 31536000000) {
+                crackTime.textContent = `${Math.round(seconds / 31536000)} anos`;
+            } else {
+                crackTime.textContent = 'Séculos / Inquebrável';
+            }
+        }
+
+        function resetMetrics() {
+            percentageVal.textContent = '0%';
+            strengthBar.style.width = '0%';
+            strengthText.textContent = 'Vazia';
+            crackTime.textContent = '0 segundos';
+            ['checkLength', 'checkCases', 'checkNumbers', 'checkSymbols', 'checkEntropy'].forEach(id => {
+                const el = document.getElementById(id);
+                el.textContent = '❌';
+                el.className = 'metric-status status-fail';
+            });
+        }
+
+        // Inicializar com uma senha ao carregar
+        generatePassword();
+    </script>
+</body>
+</html>
