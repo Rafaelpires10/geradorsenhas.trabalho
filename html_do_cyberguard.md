@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberGuard - Gerador de Senhas Temporárias & Analisador de Segurança</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">
+            <span class="logo-icon">⚡</span> CyberGuard
+        </div>
+        <div class="tagline">Gerador de Senhas Temporárias & Analisador de Segurança</div>
+        <button class="btn-guide" id="openGuideBtn">💡 Dicas para Apresentação Escolar</button>
+    </header>
+
+    <main>
+        <!-- PAINEL ESQUERDO: GERADOR E CONFIGURAÇÕES -->
+        <section class="panel">
+            <div class="panel-header">
+                <span class="section-title">Gerador de Senha Temporária</span>
+                <span class="badge">Acesso Expirável</span>
+            </div>
+
+            <div class="display-box">
+                <input type="text" id="passwordInput" class="password-input" placeholder="Digite ou gere uma senha..." autocomplete="off">
+                <div class="actions">
+                    <button class="btn-icon" id="copyBtn" title="Copiar Senha">
+                        <span class="icon">📋</span> Copiar
+                    </button>
+                    <button class="btn-icon btn-email" id="openEmailBtn" title="Enviar por E-mail">
+                        <span class="icon">✉️</span> Enviar por E-mail
+                    </button>
+                </div>
+            </div>
+
+            <!-- CARD DE VALIDADE TEMPORÁRIA -->
+            <div class="expiry-card" id="expiryCard">
+                <div class="expiry-info">
+                    <span class="expiry-icon">⏳</span>
+                    <div>
+                        <div class="expiry-title">Validade da Senha Temporária</div>
+                        <div class="expiry-subtitle">A senha expira em: <strong id="timerText">15:00</strong></div>
+                    </div>
+                </div>
+                <div class="expiry-progress-bg">
+                    <div class="expiry-progress-bar" id="expiryBar"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="control-group">
+                    <div class="control-header">
+                        <label for="lengthSlider">Tamanho da Senha</label>
+                        <span id="lengthVal" class="slider-value">16</span>
+                    </div>
+                    <input type="range" id="lengthSlider" class="length-slider" min="4" max="64" value="16">
+                </div>
+
+                <div class="control-group">
+                    <div class="control-header">
+                        <label for="expirySelect">Tempo de Validade</label>
+                        <span class="slider-value" id="expiryValDisplay">15 minutos</span>
+                    </div>
+                    <select id="expirySelect" class="expiry-select">
+                        <option value="5">5 minutos</option>
+                        <option value="15" selected>15 minutos</option>
+                        <option value="30">30 minutos</option>
+                        <option value="60">60 minutos (1 hora)</option>
+                    </select>
+                </div>
+
+                <div class="options-grid">
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incUppercase" checked>
+                        <span>Maiúsculas (A-Z)</span>
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incLowercase" checked>
+                        <span>Minúsculas (a-z)</span>
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incNumbers" checked>
+                        <span>Números (0-9)</span>
+                    </label>
+                    <label class="checkbox-card">
+                        <input type="checkbox" id="incSymbols" checked>
+                        <span>Símbolos (!@#$)</span>
+                    </label>
+                </div>
+            </div>
+
+            <button class="btn-primary" id="generateBtn">⚡ Gerar Nova Senha Temporária</button>
+        </section>
+
+        <!-- PAINEL DIREITO: ANÁLISE DE SEGURANÇA -->
+        <section class="panel">
+            <div class="panel-header">
+                <span class="section-title">Análise Científica de Força</span>
+                <span class="badge badge-tech">Matemática & Entropia</span>
+            </div>
+
+            <div class="strength-gauge-container">
+                <div class="circle-gauge">
+                    <svg viewBox="0 0 120 120">
+                        <circle class="circle-bg" cx="60" cy="60" r="50"></circle>
+                        <circle class="circle-progress" id="circleProgress" cx="60" cy="60" r="50"></circle>
+                    </svg>
+                    <div class="circle-content">
+                        <div id="percentageVal" class="percentage-display">0%</div>
+                        <div id="strengthText" class="strength-text">Nenhuma</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="entropy-box">
+                <div class="entropy-title">Entropia da Senha (E = L × log₂N)</div>
+                <div class="entropy-value"><span id="entropyVal">0</span> <small>bits de informação</small></div>
+            </div>
+
+            <div class="metrics-list">
+                <div class="metric-item">
+                    <span>Comprimento mínimo (≥ 12 caracteres)</span>
+                    <span id="checkLength" class="metric-status status-fail">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Combinação de Maiúsculas e Minúsculas</span>
+                    <span id="checkCases" class="metric-status status-fail">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Inclusão de Números</span>
+                    <span id="checkNumbers" class="metric-status status-fail">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Inclusão de Símbolos Especiais</span>
+                    <span id="checkSymbols" class="metric-status status-fail">❌</span>
+                </div>
+                <div class="metric-item">
+                    <span>Entropia Alta (&gt; 60 bits)</span>
+                    <span id="checkEntropy" class="metric-status status-fail">❌</span>
+                </div>
+            </div>
+
+            <div class="crack-time-card">
+                <div class="crack-time-label">Tempo estimado para quebra (Força Bruta - 10 bi/s):</div>
+                <div id="crackTime" class="crack-time-val">0 segundos</div>
+            </div>
+        </section>
+    </main>
+
+    <!-- MODAL DE ENVIO POR E-MAIL -->
+    <div class="modal-overlay" id="emailModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>✉️ Enviar Senha Temporária por E-mail</h3>
+                <button class="btn-close" id="closeEmailBtn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="recipientEmail">E-mail do Destinatário:</label>
+                    <input type="email" id="recipientEmail" placeholder="exemplo@escola.com.br" class="modal-input">
+                </div>
+
+                <div class="form-group">
+                    <label>Modo de Compartilhamento:</label>
+                    <div class="radio-options">
+                        <label class="radio-card">
+                            <input type="radio" name="shareMode" value="full" checked>
+                            <div>
+                                <strong>Enviar Senha + Relatório</strong>
+                                <p>Inclui a senha temporária, tempo de expiração e relatório de segurança.</p>
+                            </div>
+                        </label>
+                        <label class="radio-card">
+                            <input type="radio" name="shareMode" value="reportOnly">
+                            <div>
+                                <strong>Apenas Relatório de Segurança (Modo Seguro)</strong>
+                                <p>Envia o diagnóstico de força sem revelar a senha por motivos de privacidade.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="email-preview" id="emailPreview">
+                    <!-- Pré-visualização do texto do e-mail gerada via JS -->
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn-secondary" id="openClientBtn">Abrir no Cliente de E-mail (mailto)</button>
+                    <button class="btn-primary" id="simulateSendBtn">Simular Envio na Tela</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE ROTEIRO ESCOLAR / GUIA -->
+    <div class="modal-overlay" id="guideModal">
+        <div class="modal-card modal-large">
+            <div class="modal-header">
+                <h3>🎓 Roteiro de Apresentação para o Trabalho Escolar</h3>
+                <button class="btn-close" id="closeGuideBtn">&times;</button>
+            </div>
+            <div class="modal-body guide-content">
+                <h4>1. Introdução ao Projeto</h4>
+                <p>Explique aos avaliadores que este site analisa a força de senhas através do cálculo matemático de <strong>Entropia de Informação (Shannon)</strong> e simula o uso de <strong>Senhas Temporárias (Expiráveis)</strong>, uma prática essencial em segurança da informação.</p>
+
+                <h4>2. O que é a Porcentagem (%)?</h4>
+                <p>A porcentagem não é um valor arbitrário. Ela representa a proporção de bits de entropia atingidos em relação ao padrão de segurança ideal de 90+ bits. Uma senha de 100% exige mais de 90 bits de complexidade.</p>
+
+                <h4>3. A Fórmula da Entropia</h4>
+                <p><code>E = L × log₂(N)</code></p>
+
+                <h4>4. Senhas Temporárias</h4>
+                <p>Explique por que senhas temporárias são seguras: mesmo se uma senha forte for interceptada, sua validade curta (ex: 15 minutos) impede que um atacante a utilize no futuro.</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        CyberGuard Escolar &copy; 2026 - Desenvolvido para Feiras de Ciências e Apresentações
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
